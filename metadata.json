@@ -1,0 +1,8 @@
+{
+  "name": "Couture AI Atelier",
+  "description": "An AI-powered fashion design studio for sketching, trend matching, and trend evolution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

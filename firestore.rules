@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net (default-deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User Profile Rules
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && isValidProfile(incoming());
+      allow update: if isSignedIn() && isOwner(userId) && isValidProfile(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['fullName', 'role', 'workplaceType', 'aesthetics', 'updatedAt'])
+      );
+      allow delete: if false;
+    }
+
+    function isValidProfile(data) {
+      return data.userId is string && data.userId == request.auth.uid
+        && data.fullName is string && data.fullName.size() >= 1 && data.fullName.size() <= 100
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 200
+        && (data.role == null || (data.role is string && data.role.size() <= 100))
+        && (data.workplaceType == null || (data.workplaceType is string && data.workplaceType.size() <= 100))
+        && (data.aesthetics == null || (data.aesthetics is list && data.aesthetics.size() <= 20))
+        && data.createdAt is timestamp && (data.createdAt == request.time || data.createdAt == resource.data.createdAt)
+        && data.updatedAt is timestamp && data.updatedAt == request.time;
+    }
+
+    // User Designs Rules
+    match /designs/{designId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidDesign(incoming());
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    function isValidDesign(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.userId is string && data.userId == request.auth.uid
+        && data.prompt is string && data.prompt.size() <= 1000
+        && data.material is string && data.material.size() <= 200
+        && data.palette is string && data.palette.size() <= 200
+        && data.imageUrl is string && data.imageUrl.size() <= 2048
+        && (data.tags == null || (data.tags is list && data.tags.size() <= 10))
+        && data.createdAt is timestamp && data.createdAt == request.time;
+    }
+
+    // Favorites Rules
+    match /favorites/{favoriteId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidFavorite(incoming());
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    function isValidFavorite(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.userId is string && data.userId == request.auth.uid
+        && data.designId is string && data.designId.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.prompt is string && data.prompt.size() <= 1000
+        && data.material is string && data.material.size() <= 200
+        && data.palette is string && data.palette.size() <= 200
+        && data.imageUrl is string && data.imageUrl.size() <= 2048
+        && data.authorName is string && data.authorName.size() <= 100
+        && data.authorEmail is string && data.authorEmail.size() <= 200
+        && data.createdAt is timestamp && data.createdAt == request.time;
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile containing roles, selected aesthetics, and contact details.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique Firebase Auth User ID."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "The professional role of the user."
+        },
+        "workplaceType": {
+          "type": "string",
+          "description": "Type of organization where the user works."
+        },
+        "aesthetics": {
+          "type": "array",
+          "description": "Primary fashion aesthetics chosen by the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was last updated."
+        }
+      },
+      "required": ["userId", "fullName", "email", "createdAt", "updatedAt"]
+    },
+    "UserDesign": {
+      "title": "UserDesign",
+      "description": "Generative designs generated and saved by a user.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique design ID."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the design."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "The descriptive text prompt used for generative generation."
+        },
+        "material": {
+          "type": "string",
+          "description": "The selected fabric or material."
+        },
+        "palette": {
+          "type": "string",
+          "description": "The color palette."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The generated asset image URL."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Derived categories of the design based on material and prompt."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this design was generated and saved."
+        }
+      },
+      "required": ["id", "userId", "prompt", "material", "palette", "imageUrl", "createdAt"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "Designs favorited by a user from the community gallery.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the favorite (usually user_uid + _ + designId)."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who favorited the design."
+        },
+        "designId": {
+          "type": "string",
+          "description": "The ID of the favorited community design."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the favorited design."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "The descriptive text prompt used."
+        },
+        "material": {
+          "type": "string",
+          "description": "The fabric or material."
+        },
+        "palette": {
+          "type": "string",
+          "description": "The color palette."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The design asset image URL."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "The name of the original author."
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "The email of the original author."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this item was favorited."
+        }
+      },
+      "required": ["id", "userId", "designId", "title", "prompt", "material", "palette", "imageUrl", "authorName", "authorEmail", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "UserProfile",
+      "description": "A collection storing individual user accounts, preferences, and workspace settings."
+    },
+    "designs": {
+      "schema": "UserDesign",
+      "description": "A collection containing saved design assets generated within the studio."
+    },
+    "favorites": {
+      "schema": "Favorite",
+      "description": "A collection of favorited community designs saved by users."
+    }
+  }
+}

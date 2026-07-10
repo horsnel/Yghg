@@ -1,0 +1,23 @@
+{
+  "name": "Couture AI Atelier",
+  "short_name": "Atelier",
+  "description": "An AI-powered fashion design studio for sketching, trend matching, and trend evolution.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=192&h=192",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=512&h=512",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
